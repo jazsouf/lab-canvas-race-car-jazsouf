@@ -1,6 +1,7 @@
 //setup canvas
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+ctx.fillStyle = "white";
 
 // draw road
 const road = new Image();
@@ -26,6 +27,7 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
+// setup obstacles
 const obstacles = [];
 
 function addObstacle() {
@@ -38,26 +40,39 @@ function addObstacle() {
   obstacles.push(obstacle);
 }
 
+function checkCollison() {
+  const matchX = obstacles.some(
+    (obstacle) =>
+      obstacle.X + obstacle.width > car.X && obstacle.X < car.X + car.width
+  );
+  const matchY = obstacles.some(
+    (obstacle) => obstacle.Y > car.Y && obstacle.Y < road.height
+  );
+  return matchX && matchY;
+}
+
 function animate() {
   //updating in the canvas
   setInterval(() => {
-    // clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // draw road
-    ctx.drawImage(road, 0, 0);
-    // draw player
-    ctx.drawImage(car.carImage, car.X, car.Y, car.width, car.height);
-    // draw all obstacles
-    obstacles.forEach((obstacle) =>
-      ctx.fillRect(obstacle.X, obstacle.Y, obstacle.width, obstacle.height)
-    );
+    if (!checkCollison()) {
+      // clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // draw road
+      ctx.drawImage(road, 0, 0);
+      // draw player
+      ctx.drawImage(car.carImage, car.X, car.Y, car.width, car.height);
+      // draw all obstacles
+      obstacles.forEach((obstacle) =>
+        ctx.fillRect(obstacle.X, obstacle.Y, obstacle.width, obstacle.height)
+      );
+    }
   }, 1000 / 60);
 
   // adding obstacles
   addObstacle();
   setInterval(() => {
     addObstacle();
-  }, 10000);
+  }, 5000);
 
   // moving down obstacles
   setInterval(() => {
