@@ -19,12 +19,21 @@ road.onload = function () {
 // draw car
 const car = new Image();
 car.src = "../images/car.png";
+let carX = road.width / 2 - car.width / 6;
+let carY = road.height - car.height / 3;
+
 car.onload = function () {
-  ctx.drawImage(
-    car,
-    road.width / 2 - car.width / 7,
-    road.height - car.height / 3,
-    car.width * 0.3,
-    car.height * 0.3
-  ); // how does the width / 7 work ? I would think it should be width / 2...
+  ctx.drawImage(car, carX, carY, car.width * 0.3, car.height * 0.3);
 };
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowLeft" && carX > 0) {
+    carX -= 10;
+  }
+  if (e.key === "ArrowRight" && carX < road.width - car.width / 3) {
+    carX += 10;
+  }
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(road, 0, 0);
+  ctx.drawImage(car, carX, carY, car.width * 0.3, car.height * 0.3);
+});
